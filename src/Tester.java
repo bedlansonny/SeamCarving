@@ -11,6 +11,5 @@ public class Tester
         //Scanner in = new Scanner(System.in);
         Picture pic = new Picture("party.jpg");
 
-
     }
 }

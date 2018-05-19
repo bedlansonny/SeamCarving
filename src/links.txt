@@ -1,0 +1,16 @@
+Links for reference:
+https://www.google.com/search?q=seam+carving+algorithm&oq=seam+carving+algorithm&aqs=chrome..69i57j0l5.8373j0j7&sourceid=chrome&ie=UTF-8&safe=active
+https://en.wikipedia.org/wiki/Seam_carving#Algorithm
+https://www.google.com/search?num=100&safe=active&ei=0uD9Wpb7EIKAsQWupoSwDA&q=seam+carving+algorithm+java&oq=seam+carving+algorithm+java&gs_l=psy-ab.3..0.2968.3567.0.3621.5.5.0.0.0.0.62.224.4.4.0....0...1.1.64.psy-ab..1.4.224...0i22i30k1.0.j3uX9apb1wU
+http://csteachingtips.org/tip/have-students-implement-seam-carving-program-java-give-them-experience-dynamic-programming-and
+https://www.youtube.com/watch?v=6NcIJXTlugc
+http://nifty.stanford.edu/2015/hug-seam-carving/
+https://github.com/stensaethf/Seam-Carver
+https://www.youtube.com/watch?v=P8Xa2BitN3I
+https://github.com/bedlansonny/LabRats/blob/master/src/Graph.java
+https://www.programcreek.com/java-api-examples/index.php?source_dir=MOOC-master/Algorithms/seamCarving/SeamCarver.java
+https://dl.acm.org/citation.cfm?id=1276390
+https://introcs.cs.princeton.edu/java/stdlib/
+
+http://www.cs.princeton.edu/courses/archive/fall13/cos226/assignments/seamCarving.html
+http://www.cs.princeton.edu/courses/archive/spr13/cos226/checklist/seamCarving.html
