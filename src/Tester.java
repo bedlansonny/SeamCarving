@@ -4,23 +4,30 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
-import java.net.URL;
-
 public class Tester
 {
     public static void main(String args[]) throws IOException
     {
-        //ImageIO.write(image,suffix,new File("filename"));
         //python's a%b function = (b + a%b)%b
+        Scanner in = new Scanner(System.in);
 
-        BufferedImage image = ImageIO.read(new File("tower.jpg"));
+        BufferedImage image = ImageIO.read(new File("teletubbies1.jpg"));
         SeamCarver sc = new SeamCarver(image);
 
-        for (int i = 0; i < 200; i++) {
-            sc.removeVerticalSeam(sc.findVerticalSeam());
-        }
+        System.out.printf("Current width: %d%nCurrent height: %d%nTarget width: ", sc.width(), sc.height());
+        int x = in.nextInt();
+        System.out.printf("Target height: ");
+        int y = in.nextInt();
+
+        long start = System.currentTimeMillis();
+
+        sc.carveToRes(x, y);
+
+        long end = System.currentTimeMillis();
+
+        System.out.printf("Time: %f seconds%n", (0.0+end-start)/1000);
 
         BufferedImage imageOutput = sc.image();
-        ImageIO.write(imageOutput, "jpg", new File("toweroutput3.jpg"));
+        ImageIO.write(imageOutput, "jpg", new File("teletubbies1output.jpg"));
     }
 }

@@ -1,8 +1,7 @@
 TODO:
--use Dijkstra's to find vertical seam
+x-use Dijkstra's to find vertical seam
 -implement efficient deletion and recovery method
--implement carve method
--implement horizontal seam carving as well
+x-implement horizontal seam carving as well
 -implement growth with interpellation, left-right averaging, or something else
     -left-right averaging means deleting the original seam and replacing it with two new ones:
         left-original average color

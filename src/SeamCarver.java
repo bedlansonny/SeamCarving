@@ -144,7 +144,6 @@ public class SeamCarver
 
         pixels = output;
 
-        //TODO: update energy around the seam, fix this
         for (int y = 0; y < height(); y++) {
             updateEnergy((width() + (seam[y]-1)%width())%width(), y);
             updateEnergy(seam[y]%width(), y);
@@ -153,12 +152,108 @@ public class SeamCarver
 
     }
 
-//    public void carve(char dimension, int amount)   //dimension x or y, amount negative for shrinking positive for growing
+    //sequence of indices for horizontal seam
+    public int[] findHorizontalSeam()
+    {
+        for(Pixel[] pixelArr : pixels)
+            for(Pixel pixel : pixelArr)
+                pixel.resetTraveled();
 
-//    public int[] findHorizontalSeam()               // sequence of indices for horizontal seam
-//    public void removeHorizontalSeam(int[] seam)   // remove horizontal seam from picture
+        //HashMap<Pixel, Double> traveled = new HashMap<>(); //pixel, traveled distance of pixel in ideal path
+        HashMap<Pixel, Pixel> prev = new HashMap<>(); //pixel, previous pixel in ideal path
+        HashSet<Pixel> visited = new HashSet<>(); //pixels that have already been visited and therefore *** is this necessary???
+        PriorityQueue<Pixel> toCheck = new PriorityQueue<>();
 
-    static class Pixel implements Comparable<Pixel>
+        //add top row as all possible starts
+        for (int y = 0; y < height(); y++) {
+            pixels[y][0].traveled = (long)pixels[y][0].energy;
+            toCheck.add(pixels[y][0]);
+        }
+
+        while(toCheck.size() > 0)
+        {
+            Pixel current = toCheck.poll();
+            visited.add(current);
+
+            //reached bottom, shortest path
+            if(current.x == width()-1)
+            {
+                int[] output = new int[width()];
+                Pixel seamPixel = current;
+                for (int x = width()-1; x >=0; x--)
+                {
+                    output[x] = seamPixel.y;
+                    seamPixel = prev.get(seamPixel);
+                }
+                return output;
+            }
+
+
+            //TODO: finish converting this to horizontal
+            Pixel[] children;
+            if(current.y == 0)
+                children = new Pixel[] {pixels[current.y][current.x+1], pixels[current.y+1][current.x+1]};
+            else if(current.y == height()-1)
+                children = new Pixel[] {pixels[current.y-1][current.x+1], pixels[current.y][current.x]};
+            else
+                children = new Pixel[] {pixels[current.y-1][current.x+1], pixels[current.y][current.x+1], pixels[current.y+1][current.x+1]};
+
+            for(Pixel child : children)
+            {
+                if(!visited.contains(child) && child.traveled > current.traveled + child.energy)
+                {
+                    prev.put(child, current);
+                    child.traveled = current.traveled + child.energy;
+                    toCheck.add(child);
+                }
+            }
+        }
+        return null;    //if it fails
+    }
+
+    // remove horizontal seam from picture
+    public void removeHorizontalSeam(int[] seam)
+    {
+        Pixel[][] output = new Pixel[height()-1][width()];
+
+        for (int x = 0; x < output[0].length; x++) {
+            for (int y = 0; y < seam[x]; y++) {
+                output[y][x] = pixels[y][x];
+            }
+            for(int y = seam[x]; y < output.length; y++) {
+                output[y][x] = new Pixel(pixels[y+1][x], x, y);
+            }
+        }
+
+        pixels = output;
+
+        for (int x = 0; x < width(); x++) {
+            updateEnergy(x, (height() + (seam[x]-1)%height())%height());
+            updateEnergy(x, seam[x]%height());
+        }
+    }
+
+    public void removeVerticalSeams(int seamTotal)
+    {
+        for (int i = 0; i < seamTotal; i++) {
+            removeVerticalSeam(findVerticalSeam());
+        }
+    }
+
+    public void removeHorizontalSeams(int seamTotal)
+    {
+        for (int i = 0; i < seamTotal; i++) {
+            removeHorizontalSeam(findHorizontalSeam());
+        }
+    }
+
+    public void carveToRes(int x, int y)
+    {
+        removeVerticalSeams(width()-x);
+        removeHorizontalSeams(height()-y);
+    }
+
+    class Pixel implements Comparable<Pixel>
     {
         double energy;
         Color color;
