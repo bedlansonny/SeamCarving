@@ -113,18 +113,7 @@ public class SeamCarver
             else if(current.x == width()-1)
                 children = new Pixel[] {pixels[current.y+1][current.x-1], pixels[current.y+1][current.x]};
             else
-            {
-                try
-                {
-                    //TODO: FIX THIS
-                    children = new Pixel[] {pixels[current.y+1][current.x-1], pixels[current.y+1][current.x], pixels[current.y+1][current.x+1]};
-                }
-                catch(Exception e)
-                {
-                    System.out.printf("%d%n%d%n%d%n%d%n",width(),height(),current.x,current.y);
-                    children = null;
-                }
-            }
+                children = new Pixel[] {pixels[current.y+1][current.x-1], pixels[current.y+1][current.x], pixels[current.y+1][current.x+1]};
 
             for(Pixel child : children)
             {
@@ -168,4 +157,40 @@ public class SeamCarver
 
 //    public int[] findHorizontalSeam()               // sequence of indices for horizontal seam
 //    public void removeHorizontalSeam(int[] seam)   // remove horizontal seam from picture
+
+    static class Pixel implements Comparable<Pixel>
+    {
+        double energy;
+        Color color;
+        double traveled = Double.MAX_VALUE;
+        int x, y;
+
+        public Pixel(Color color, int x, int y)
+        {
+            this.color = color;
+            this.x = x;
+            this.y = y;
+        }
+
+        public Pixel(Pixel pixel, int x, int y)
+        {
+            this.energy = pixel.energy;
+            this.color = pixel.color;
+
+            this.x = x;
+            this.y = y;
+        }
+
+        public void resetTraveled()
+        {
+            traveled = Double.MAX_VALUE;
+        }
+
+        public int compareTo(Pixel otherPixel)
+        {
+            return (int)(this.traveled - otherPixel.traveled);
+        }
+
+    }
+
 }
