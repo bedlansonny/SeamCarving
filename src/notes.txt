@@ -7,6 +7,10 @@ TODO:
     -left-right averaging means deleting the original seam and replacing it with two new ones:
         left-original average color
         right-original average color
+-create method to change picture into an ideal resolution with seam carving
+-create a gui and make it a webapp
+-allow selection of certain objects to definitely remove or definitely keep
+
 
 The key to efficiency in this algorithm is going to be the method of deletion and restoration, because energy would have to be recalculated, and
 putting an image back together again takes a long time as well.
@@ -20,3 +24,15 @@ To update the array after the split:
 -only recalculate the indexes that were to the deletion's immediate left and right and their affected neighbors
     use the seam location array to tell you where the deleted Pixel was for each row
 
+
+idea, though likely inefficient:
+When wanting to shrink the image by amount n columns:
+It may be more efficient to find all of the most efficient n seams and remove them all at once,
+rather than removing one and updating the new image each time
+    biggest problem with this idea: you would have to skip the pixels in the seam rather than ignoring it, because
+    the removal of a seam changes the children of pixels, causing you to have to check different coordinates when checking
+    below, below left, and below right.
+Strategy:
+    -find best path and store it
+    -reset all stuff: visited, prev, traveled, and set all pixels in best discovered paths so far to visited
+    -find the best path again, somehow changing the children properly
