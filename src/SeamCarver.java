@@ -55,12 +55,12 @@ public class SeamCarver
     // energy of pixel at row y and column x: Rx2+Gx2+Bx2+Ry2+Gy2+By2
     public double energy(int x, int y)
     {
-        double rx = pixels[y][(x-1)%width()].color.getRed() - pixels[y][(x+1)%width()].color.getRed();
-        double gx = pixels[y][(x-1)%width()].color.getGreen() - pixels[y][(x+1)%width()].color.getGreen();
-        double bx = pixels[y][(x-1)%width()].color.getBlue() - pixels[y][(x+1)%width()].color.getBlue();
-        double ry = pixels[(y-1)%height()][x].color.getRed() - pixels[(y+1)%height()][x].color.getRed();
-        double gy = pixels[(y-1)%height()][x].color.getGreen() - pixels[(y+1)%height()][x].color.getGreen();
-        double by = pixels[(y-1)%height()][x].color.getBlue() - pixels[(y+1)%height()][x].color.getBlue();
+        double rx = pixels[y][(width()+(x-1)%width())%width()].color.getRed() - pixels[y][(width()+(x+1)%width())%width()].color.getRed();
+        double gx = pixels[y][(width()+(x-1)%width())%width()].color.getGreen() - pixels[y][(width()+(x+1)%width())%width()].color.getGreen();
+        double bx = pixels[y][(width()+(x-1)%width())%width()].color.getBlue() - pixels[y][(width()+(x+1)%width())%width()].color.getBlue();
+        double ry = pixels[(height()+(y-1)%height())%height()][x].color.getRed() - pixels[(height()+(y+1)%height())%height()][x].color.getRed();
+        double gy = pixels[(height()+(y-1)%height())%height()][x].color.getGreen() - pixels[(height()+(y+1)%height())%height()][x].color.getGreen();
+        double by = pixels[(height()+(y-1)%height())%height()][x].color.getBlue() - pixels[(height()+(y+1)%height())%height()][x].color.getBlue();
 
         return rx*rx+gx*gx+bx*bx+ry*ry+gy*gy+by*by;
     }
@@ -70,10 +70,14 @@ public class SeamCarver
         pixels[y][x].energy = energy(x,y);
     }
 
-    //TODO: use Dijkstra's to find vertical seam
+    //unsure if this works yet
     // sequence of indices for vertical seam
     public int[] findVerticalSeam()
     {
+        for(Pixel[] pixelArr : pixels)
+            for(Pixel pixel : pixelArr)
+                pixel.resetTraveled();
+
         //HashMap<Pixel, Double> traveled = new HashMap<>(); //pixel, traveled distance of pixel in ideal path
         HashMap<Pixel, Pixel> prev = new HashMap<>(); //pixel, previous pixel in ideal path
         HashSet<Pixel> visited = new HashSet<>(); //pixels that have already been visited and therefore *** is this necessary???
@@ -109,7 +113,18 @@ public class SeamCarver
             else if(current.x == width()-1)
                 children = new Pixel[] {pixels[current.y+1][current.x-1], pixels[current.y+1][current.x]};
             else
-                children = new Pixel[] {pixels[current.y+1][current.x-1], pixels[current.y+1][current.x], pixels[current.y+1][current.x+1]};
+            {
+                try
+                {
+                    //TODO: FIX THIS
+                    children = new Pixel[] {pixels[current.y+1][current.x-1], pixels[current.y+1][current.x], pixels[current.y+1][current.x+1]};
+                }
+                catch(Exception e)
+                {
+                    System.out.printf("%d%n%d%n%d%n%d%n",width(),height(),current.x,current.y);
+                    children = null;
+                }
+            }
 
             for(Pixel child : children)
             {
@@ -124,10 +139,33 @@ public class SeamCarver
         return null;    //if it fails
     }
 
-//    public    void removeVerticalSeam(int[] seam)     // remove vertical seam from picture
+    // remove vertical seam from picture
+    public void removeVerticalSeam(int[] seam)
+    {
+        Pixel[][] output = new Pixel[height()][width()-1];
+
+        for (int y = 0; y < output.length; y++) {
+            for (int x = 0; x < seam[y]; x++) {
+                output[y][x] = pixels[y][x];
+            }
+            for(int x = seam[y]; x < output[y].length; x++) {
+                output[y][x] = new Pixel(pixels[y][x+1], x, y);
+            }
+        }
+
+        pixels = output;
+
+        //TODO: update energy around the seam, fix this
+        for (int y = 0; y < height(); y++) {
+            updateEnergy((width() + (seam[y]-1)%width())%width(), y);
+            updateEnergy(seam[y]%width(), y);
+        }
+
+
+    }
 
 //    public void carve(char dimension, int amount)   //dimension x or y, amount negative for shrinking positive for growing
 
-//    public   int[] findHorizontalSeam()               // sequence of indices for horizontal seam
-//    public    void removeHorizontalSeam(int[] seam)   // remove horizontal seam from picture
+//    public int[] findHorizontalSeam()               // sequence of indices for horizontal seam
+//    public void removeHorizontalSeam(int[] seam)   // remove horizontal seam from picture
 }

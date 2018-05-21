@@ -7,6 +7,10 @@ TODO:
     -left-right averaging means deleting the original seam and replacing it with two new ones:
         left-original average color
         right-original average color
+-create method to change picture into an ideal resolution with seam carving
+-create a gui and make it a webapp
+-allow selection of certain objects to definitely remove or definitely keep
+
 
 The key to efficiency in this algorithm is going to be the method of deletion and restoration, because energy would have to be recalculated, and
 putting an image back together again takes a long time as well.
