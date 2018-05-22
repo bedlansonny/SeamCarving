@@ -14,3 +14,5 @@ https://introcs.cs.princeton.edu/java/stdlib/
 
 http://www.cs.princeton.edu/courses/archive/fall13/cos226/assignments/seamCarving.html
 http://www.cs.princeton.edu/courses/archive/spr13/cos226/checklist/seamCarving.html
+
+https://courses.cs.washington.edu/courses/cse557/08wi/projects/final/artifacts/ankit-rahul/
