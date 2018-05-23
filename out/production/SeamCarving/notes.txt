@@ -1,3 +1,15 @@
+***new plan***:
+When deleting or duplicating seams to fit a target resolution,
+find the best n amount of seam paths and return them, probably through
+an array of all the seam arrays, therefore a 2d array.
+	Hint: set all pixels containing previous shortest paths to visited at the beginning of searching
+	for each new path. There may be a faster way, google it!
+Then, based on whether you are expanding by that amount or shortening by that amount,
+either duplicate them or remove them through splicing.
+Then, and only then, update the energy values of all the effected cells.
+	Hint: If removing, only energy update the seams that were to the left and right of the removed one.
+	If duplicating, only energy update the original and its duplicate, not the ones to the left and right.
+
 TODO:
 x-use Dijkstra's to find vertical seam
 -implement efficient deletion and recovery method
@@ -6,6 +18,8 @@ x-implement horizontal seam carving as well
     -left-right averaging means deleting the original seam and replacing it with two new ones:
         left-original average color
         right-original average color
+    BETTER METHOD:
+        when shrinking by n, find the n lowest energy seams and duplicate them all.
 -create method to change picture into an ideal resolution with seam carving
 -create a gui and make it a webapp
 -allow selection of certain objects to definitely remove or definitely keep

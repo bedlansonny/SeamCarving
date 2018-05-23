@@ -4,6 +4,11 @@ find the best n amount of seam paths and return them, probably through
 an array of all the seam arrays, therefore a 2d array.
 	Hint: set all pixels containing previous shortest paths to visited at the beginning of searching
 	for each new path. There may be a faster way, google it!
+	Important**: This means that if a pixel of a used seam is
+	    to a pixel's bottom right, its true bottom right is not [y+1][x+1], but [y+1][x+2]
+	    true bottom is not [y+1][x] but [y+1][x+1] <-- apparently not always true
+	    true bottom right is not [y+1][x-1] but [y+1][x-2]
+	    ** unless that is also a removed pixel, then keep checking in that direction until looped around
 Then, based on whether you are expanding by that amount or shortening by that amount,
 either duplicate them or remove them through splicing.
 Then, and only then, update the energy values of all the effected cells.

@@ -53,14 +53,14 @@ public class SeamCarver
     }
 
     // energy of pixel at row y and column x: Rx2+Gx2+Bx2+Ry2+Gy2+By2
-    public double energy(int x, int y)
+    public long energy(int x, int y)
     {
-        double rx = pixels[y][(width()+(x-1)%width())%width()].color.getRed() - pixels[y][(width()+(x+1)%width())%width()].color.getRed();
-        double gx = pixels[y][(width()+(x-1)%width())%width()].color.getGreen() - pixels[y][(width()+(x+1)%width())%width()].color.getGreen();
-        double bx = pixels[y][(width()+(x-1)%width())%width()].color.getBlue() - pixels[y][(width()+(x+1)%width())%width()].color.getBlue();
-        double ry = pixels[(height()+(y-1)%height())%height()][x].color.getRed() - pixels[(height()+(y+1)%height())%height()][x].color.getRed();
-        double gy = pixels[(height()+(y-1)%height())%height()][x].color.getGreen() - pixels[(height()+(y+1)%height())%height()][x].color.getGreen();
-        double by = pixels[(height()+(y-1)%height())%height()][x].color.getBlue() - pixels[(height()+(y+1)%height())%height()][x].color.getBlue();
+        int rx = pixels[y][(width()+(x-1)%width())%width()].color.getRed() - pixels[y][(width()+(x+1)%width())%width()].color.getRed();
+        int gx = pixels[y][(width()+(x-1)%width())%width()].color.getGreen() - pixels[y][(width()+(x+1)%width())%width()].color.getGreen();
+        int bx = pixels[y][(width()+(x-1)%width())%width()].color.getBlue() - pixels[y][(width()+(x+1)%width())%width()].color.getBlue();
+        int ry = pixels[(height()+(y-1)%height())%height()][x].color.getRed() - pixels[(height()+(y+1)%height())%height()][x].color.getRed();
+        int gy = pixels[(height()+(y-1)%height())%height()][x].color.getGreen() - pixels[(height()+(y+1)%height())%height()][x].color.getGreen();
+        int by = pixels[(height()+(y-1)%height())%height()][x].color.getBlue() - pixels[(height()+(y+1)%height())%height()][x].color.getBlue();
 
         return rx*rx+gx*gx+bx*bx+ry*ry+gy*gy+by*by;
     }
@@ -70,7 +70,84 @@ public class SeamCarver
         pixels[y][x].energy = energy(x,y);
     }
 
-    //unsure if this works yet
+/*
+    public int[][] findVerticalSeams(int seamTotal)
+    {
+        int[][] output = new int[seamTotal][height()];
+        HashSet<Pixel> used = new HashSet<>();
+
+        //loop all this stuff below seamTotal times
+        for (int seamNum = 0; seamNum < seamTotal; seamNum++)
+        {
+            for(Pixel[] pixelArr : pixels)
+                for(Pixel pixel : pixelArr)
+                    pixel.resetTraveled();
+
+            HashMap<Pixel, Pixel> prev = new HashMap<>();
+            PriorityQueue<Pixel> toCheck = new PriorityQueue<>();
+            HashSet<Pixel> visited = new HashSet<>();
+
+            //add top row as starts
+            for (int x = 0; x < width(); x++) {
+                if(!used.contains(pixels[0][x]))
+                {
+                    pixels[0][x].traveled = pixels[0][x].energy;
+                    toCheck.add(pixels[0][x]);
+                }
+            }
+
+            while(true)
+            {
+                Pixel current = toCheck.poll();
+                visited.add(current);
+
+                if(current.y == height()-1)
+                {
+                    Pixel seamPixel = current;
+                    for(int y = height()-1; y >= 0; y--)
+                    {
+                        used.add(seamPixel);
+                        output[seamNum][y] = seamPixel.x;
+                        seamPixel = prev.get(seamPixel);
+                    }
+                    break;
+                }
+
+                //find true bottom left, true bottom, and true bottom right
+                //if used, keep checking
+                LinkedList<Pixel> children = new LinkedList<>();
+                //bottom
+                //TODO: find actual formula for this
+                    //this is not correct, because true bottom
+                    //can also be on its left
+                for(int x = current.x; x < width(); x++)
+                {
+                    if(!used.contains(pixels[current.y+1][x]))
+                    {
+                        children.add(pixels[current.y+1][x]);
+                        break;
+                    }
+                }
+
+                //bottom right, start looking from the bottom found above
+                if(current.x < width()-1)
+                {
+
+                }
+
+                //bottom left
+                if(current.x > 0)
+                {
+
+                }
+
+
+
+            }
+        }
+    }
+*/
+
     // sequence of indices for vertical seam
     public int[] findVerticalSeam()
     {
@@ -78,18 +155,17 @@ public class SeamCarver
             for(Pixel pixel : pixelArr)
                 pixel.resetTraveled();
 
-        //HashMap<Pixel, Double> traveled = new HashMap<>(); //pixel, traveled distance of pixel in ideal path
         HashMap<Pixel, Pixel> prev = new HashMap<>(); //pixel, previous pixel in ideal path
         HashSet<Pixel> visited = new HashSet<>(); //pixels that have already been visited and therefore *** is this necessary???
         PriorityQueue<Pixel> toCheck = new PriorityQueue<>();
 
         //add top row as all possible starts
         for (int x = 0; x < width(); x++) {
-            pixels[0][x].traveled = (long)pixels[0][x].energy;
+            pixels[0][x].traveled = pixels[0][x].energy;
             toCheck.add(pixels[0][x]);
         }
 
-        while(toCheck.size() > 0)
+        while(true)
         {
             Pixel current = toCheck.poll();
             visited.add(current);
@@ -125,7 +201,6 @@ public class SeamCarver
                 }
             }
         }
-        return null;    //if it fails
     }
 
     // remove vertical seam from picture
@@ -159,7 +234,6 @@ public class SeamCarver
             for(Pixel pixel : pixelArr)
                 pixel.resetTraveled();
 
-        //HashMap<Pixel, Double> traveled = new HashMap<>(); //pixel, traveled distance of pixel in ideal path
         HashMap<Pixel, Pixel> prev = new HashMap<>(); //pixel, previous pixel in ideal path
         HashSet<Pixel> visited = new HashSet<>(); //pixels that have already been visited and therefore *** is this necessary???
         PriorityQueue<Pixel> toCheck = new PriorityQueue<>();
@@ -170,7 +244,7 @@ public class SeamCarver
             toCheck.add(pixels[y][0]);
         }
 
-        while(toCheck.size() > 0)
+        while(true)
         {
             Pixel current = toCheck.poll();
             visited.add(current);
@@ -189,7 +263,6 @@ public class SeamCarver
             }
 
 
-            //TODO: finish converting this to horizontal
             Pixel[] children;
             if(current.y == 0)
                 children = new Pixel[] {pixels[current.y][current.x+1], pixels[current.y+1][current.x+1]};
@@ -208,7 +281,6 @@ public class SeamCarver
                 }
             }
         }
-        return null;    //if it fails
     }
 
     // remove horizontal seam from picture
@@ -255,9 +327,9 @@ public class SeamCarver
 
     class Pixel implements Comparable<Pixel>
     {
-        double energy;
+        long energy;
         Color color;
-        double traveled = Double.MAX_VALUE;
+        long traveled = Long.MAX_VALUE;
         int x, y;
 
         public Pixel(Color color, int x, int y)
@@ -278,7 +350,7 @@ public class SeamCarver
 
         public void resetTraveled()
         {
-            traveled = Double.MAX_VALUE;
+            traveled = Long.MAX_VALUE;
         }
 
         public int compareTo(Pixel otherPixel)
